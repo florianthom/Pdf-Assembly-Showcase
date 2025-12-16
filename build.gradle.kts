@@ -45,6 +45,10 @@ tasks.named("bootRun") {
     dependsOn("installPlaywrightChromium")
 }
 
+tasks.named("build") {
+    dependsOn("installPlaywrightChromium")
+}
+
 tasks.named("test") {
     dependsOn("installPlaywrightChromium")
 }
