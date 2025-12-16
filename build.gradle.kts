@@ -29,6 +29,50 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+tasks.withType<JavaExec> {
+    environment("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1")
+}
+
 tasks.withType<Test> {
-	useJUnitPlatform()
+	useJUnitPlatform();
+    environment("PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD", "1");
+}
+
+// for local dev:
+// 1. open run config
+// 2. add before launch gradle task: installPlaywrightChromium
+tasks.named("bootRun") {
+    dependsOn("installPlaywrightChromium")
+}
+
+tasks.named("test") {
+    dependsOn("installPlaywrightChromium")
+}
+
+// ./gradlew playwrightInstall
+tasks.register<JavaExec>("installPlaywrightChromium") {
+    group = "playwright"
+    description = "Install Playwright Chromium browser"
+
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.microsoft.playwright.CLI")
+    args("install", "--with-deps", "--no-shell", "chromium")
+
+    // environment("PLAYWRIGHT_DOWNLOAD_HOST", "https://my-corp-proxy.com/playwright")
+}
+
+// ./gradlew cleanPlaywrightBrowsers
+tasks.register<JavaExec>("uninstallPlaywrightChromium") {
+    group = "playwright"
+    description = "Uninstall Playwright Chromium browser"
+
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.microsoft.playwright.CLI")
+    args("uninstall", "--all")
+}
+
+// ./gradlew reinstallPlaywrightChromium
+tasks.register("reinstallPlaywrightChromium") {
+    group = "playwright"
+    dependsOn("cleanPlaywrightBrowsers", "installPlaywrightChromium")
 }

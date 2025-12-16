@@ -30,7 +30,9 @@ public class PdfAssemblyService {
 
         Page page = playwrightBrowserBontext.newPage();
         page.setContent(htmlString);
-        byte[] pdf = page.pdf();
+        byte[] pdf = page.pdf(new Page.PdfOptions()
+                .setFormat("A4")
+                .setPrintBackground(true));
         page.close();
         return pdf;
     }

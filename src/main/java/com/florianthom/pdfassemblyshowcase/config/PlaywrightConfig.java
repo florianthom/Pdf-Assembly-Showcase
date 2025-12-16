@@ -21,6 +21,7 @@ public class PlaywrightConfig {
     public Browser chromiumBrowser(Playwright playwright) {
         return playwright.chromium().launch(new BrowserType.LaunchOptions()
                 .setHeadless(true)
+                .setChannel("chromium")
                 .setArgs(List.of("--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage")));
     }
 
