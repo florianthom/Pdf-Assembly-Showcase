@@ -84,12 +84,13 @@ The signing requires the following input (here for PDF signature level "pades" i
 4. CertificateVerifier (OCSP / CRL Fetching): DSS will read the AIA-URLs for OCSP directly from the X.509-certificate (see first requirement)
 
 The input parameters are defined in apps application.yaml.
-Further fundamentals are described in [pdfSigning.pdf](docs/pdfSigning.pdf)
-
+The signature of the output-pdf can be validated by [DSS Validator WebApp](https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/validation)
 
 <p align="center" width="100%">
 <img src="docs/images/dssValidation.png" alt="pdf preview" style="width: 85%;">
 </p>
+
+Further fundamentals are described in [pdfSigning.pdf](docs/pdfSigning.pdf)
 
 ### Generate self-signed certificate
 The self-signed certificate can be generated via following snipped:
