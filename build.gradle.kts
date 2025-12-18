@@ -25,6 +25,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.microsoft.playwright:playwright:1.57.0")
     implementation("org.thymeleaf:thymeleaf:3.1.3.RELEASE")
+
+    implementation("eu.europa.ec.joinup.sd-dss:dss-pades-pdfbox:6.3")
+    implementation("eu.europa.ec.joinup.sd-dss:dss-token:6.3")
+    implementation("eu.europa.ec.joinup.sd-dss:dss-service:6.3")
+    implementation("eu.europa.ec.joinup.sd-dss:dss-utils-apache-commons:6.3")
+    implementation("eu.europa.ec.joinup.sd-dss:dss-cms-object:6.3")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

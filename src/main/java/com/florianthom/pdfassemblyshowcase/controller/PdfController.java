@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
@@ -45,7 +46,7 @@ public class PdfController {
     }
 
     @GetMapping("/create-pdf")
-    public ResponseEntity<byte[]> createPdf(){
+    public ResponseEntity<byte[]> createPdf() throws IOException {
         var pdf = pdfAssemblyService.assemblePdf(trainer);
 
         HttpHeaders headers = new HttpHeaders();
@@ -53,7 +54,7 @@ public class PdfController {
         headers.setContentDisposition(
                 // "inline" to show in browser if supported
                 // "attachment" to force download
-                ContentDisposition.builder("inline")
+                ContentDisposition.builder("attachment")
                         .filename("pokemontrainer-" + trainer.trainerId + ".pdf")
                         .build()
         );
