@@ -1,6 +1,8 @@
 # Pdf-Assembly-Showcase
-A Spring Boot microservice for generating PDFs from HTML using **Playwright Java** and signing them using *EU DSS* (profile: pades-lt).  
-Supports headless Chromium execution, pre-installed browser binaries, and is optimized for CI/CD, Docker, and local development.
+A Spring Boot microservice for generating PDFs from HTML and signing them using *EU DSS* (profile: pades-lt).
+The pdf generation can be done by
+* Create the pdf in-app using [Playwright Java](https://playwright.dev/java/docs/intro). Supports headless Chromium execution, pre-installed browser binaries, is optimized for Docker and local development.
+* Create the pdf by using self-hosted [Gotenberg Service](https://gotenberg.dev).
 
 <p align="center" width="100%">
 <img src="docs/images/pdfPreview.png" alt="pdf preview" style="width: 85%;">
@@ -13,8 +15,11 @@ Supports headless Chromium execution, pre-installed browser binaries, and is opt
 - Generate PDFs via Playwright from HTML templates via thymeleafe
 - Headless Chromium support (new headless mode)
 - Pre-download browsers at build time to avoid runtime downloads
-- Compatible with Docker and restricted environments
+- Optimzed Dockerfile for readonly environments
 - Signing of PDF's in compliance with ISO 32000-1, eIDAS, AdES (PAdES-LT), BSI TR-03138 – RESISCAN
+- Generate PDFs via seperate Gotenberg service from HTML templates via thymeleafe
+- Restrict access to Gotenberg service via Basic Auth
+- Include images into pdf by mount them directly into Gotenberg (see docker compose) or send them via http
 
 ---
 
@@ -23,7 +28,7 @@ Supports headless Chromium execution, pre-installed browser binaries, and is opt
 - Java 25+
 - Gradle 9.2+
 - macOS, Linux, or Windows
-- Optional: Docker for containerized builds
+- Optional: Docker & Docker Compose for containerized builds/execs
 
 ---
 
@@ -34,7 +39,7 @@ Supports headless Chromium execution, pre-installed browser binaries, and is opt
 Installs Playwright-managed Chromium (with OS dependencies) to the local cache:
 
 ```bash
-./gradlew installPlaywrightChromium
+  ./gradlew installPlaywrightChromium
 ```
 
 ### 2. Uninstall Playwright Chromium
@@ -42,26 +47,48 @@ Installs Playwright-managed Chromium (with OS dependencies) to the local cache:
 Uninstalls all Playwright-managed browsers (with OS dependencies) to the local cache:
 
 ```bash
-./gradlew uninstallPlaywrightChromium
+  ./gradlew uninstallPlaywrightChromium
 ```
 
-## Build & run
+## Build & Run: Standalone
 
 Build the project (will run installPlaywrightChromium first):
 ```bash
-./gradlew build
+  ./gradlew build
 ```
 
-Run locally:
+Run local:
 ```bash
-./gradlew bootRun
+  ./gradlew bootRun
 ```
 
-Download PDF
+Download PDF (created internally)
 ```bash
- open http://localhost:8080/create-pdf
+  open http://localhost:8080/create-pdf
 ```
 
+## Build & Run: Docker Compose
+
+Build the project:
+```bash
+  docker compose build
+```
+
+Run local:
+```bash
+  docker compose up -d
+```
+
+Test Gotenberg Service:
+```bash
+  echo "<html><body><h1>Hello Gotenberg</h1></body></html>" > index.html;
+  curl -X POST "http://0.0.0.0:3000/forms/chromium/convert/html" -F "files[]=@index.html" --output output.pdf
+```
+
+Download PDF (created by gotenberg)
+```bash
+  open http://localhost:8081/create-pdf-with-gotenberg
+```
 
 ## IntelliJ Setup
 
@@ -73,6 +100,8 @@ Download PDF
 - java v25
 - spring boot v4
 - thymeleafe v1.57
+- gotenberg v8.25
+
 
 ## Signing
 The signing is done via [EU Digital Signature Service (DSS)](https://github.com/esig/dss).
@@ -96,7 +125,7 @@ Further fundamentals are described in [pdfSigning.pdf](docs/pdfSigning.pdf)
 The self-signed certificate can be generated via following snipped:
 
 ```bash
-keytool
+  keytool
     -genkeypair \
     -alias test-signing \
     -keyalg RSA \
@@ -109,3 +138,10 @@ keytool
     -keypass password \
     -dname "CN=Test User, OU=PoC, O=Example, L=Berlin, C=DE"
 ```
+
+## Additional hints
+
+* Why dont use the official playwright docker image (see [docs](https://playwright.dev/java/docs/docker))?
+    * Docu states "This Docker image is intended to be used for testing and development purposes only. It is not recommended to use this Docker image to visit untrusted websites."
+    * Given docker image does not allow to specify java version
+* Gotenberg project does not provide an official openapi-spec which would allow auto-generated (java) clients. Yes there are community SDK's but especially for java these are rather not mature or getting less maintenance. The approache here is to hard-code the concrete endpoint and input/output objects (if even needed). Since the communicated data are mostly byte-array this is accepted here.

@@ -22,7 +22,7 @@ public class PlaywrightConfig {
         return playwright.chromium().launch(new BrowserType.LaunchOptions()
                 .setHeadless(true)
                 .setChannel("chromium")
-                .setArgs(List.of("--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage")));
+                .setArgs(List.of("--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--disable-crash-reporter", "--no-crashpad", "--disable-setuid-sandbox", "--single-process", "--font-render-hinting=none")));
     }
 
     @Bean

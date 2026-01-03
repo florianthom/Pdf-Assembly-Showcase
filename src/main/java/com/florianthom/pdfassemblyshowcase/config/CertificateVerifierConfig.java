@@ -20,7 +20,7 @@ public class CertificateVerifierConfig {
     @Bean
     public CommonCertificateVerifier certificateVerifier() {
         CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-        verifier.setCheckRevocationForUntrustedChains(signingProperties.getCheckRevocationForUntrustedChains());
+        verifier.setCheckRevocationForUntrustedChains(signingProperties.checkRevocationForUntrustedChains());
 
         // MUST NOT GO IN PRODUCTION
         verifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.INFO));

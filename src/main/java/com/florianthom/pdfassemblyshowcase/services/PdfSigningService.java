@@ -43,7 +43,7 @@ public class PdfSigningService implements Closeable {
 
         try {
             this.token = new Pkcs12SignatureToken(
-                    new FileInputStream(signingProperties.getPkcs12FileName()),
+                    new FileInputStream(signingProperties.pkcs12FileName()),
                     new KeyStore.PasswordProtection("password".toCharArray())
             );
             this.signingKey = token.getKeys().getFirst();

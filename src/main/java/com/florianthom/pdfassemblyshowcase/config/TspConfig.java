@@ -17,9 +17,9 @@ public class TspConfig {
     @Bean
     public OnlineTSPSource tsaSource() {
         System.out.println(signingProperties);
-        OnlineTSPSource tsp = new OnlineTSPSource(signingProperties.getTspSourceUrl());
-        if (signingProperties.getTspPolicyOid() != null && !signingProperties.getTspPolicyOid().isEmpty()) {
-            tsp.setPolicyOid(signingProperties.getTspPolicyOid());
+        OnlineTSPSource tsp = new OnlineTSPSource(signingProperties.tspSourceUrl());
+        if (signingProperties.tspPolicyOid() != null && !signingProperties.tspPolicyOid().isEmpty()) {
+            tsp.setPolicyOid(signingProperties.tspPolicyOid());
         }
         return tsp;
     }

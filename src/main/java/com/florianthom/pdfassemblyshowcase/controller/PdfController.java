@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -35,7 +36,7 @@ public class PdfController {
     );
 
     @Autowired
-    public PdfController(TemplateEngine templateEngine, PdfAssemblyService pdfAssemblyService) {
+    public PdfController(TemplateEngine templateEngine, PdfAssemblyService pdfAssemblyService, WebClient gotenbergWebClient) {
         this.templateEngine = templateEngine;
         this.pdfAssemblyService = pdfAssemblyService;
     }
@@ -55,6 +56,23 @@ public class PdfController {
                 // "inline" to show in browser if supported
                 // "attachment" to force download
                 ContentDisposition.builder("attachment")
+                        .filename("pokemontrainer-" + trainer.trainerId + ".pdf")
+                        .build()
+        );
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
+    }
+
+    @GetMapping("/create-pdf-with-gotenberg")
+    public ResponseEntity<byte[]> createPdfWithGotenberg() {
+        var pdf = pdfAssemblyService.renderPdfByGotenbergChromium(trainer);
+
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(
+                ContentDisposition.builder("inline")
                         .filename("pokemontrainer-" + trainer.trainerId + ".pdf")
                         .build()
         );

@@ -2,12 +2,18 @@ spring:
   application:
     name: pdfassemblyshowcase
 
-signing:
-  # has to be true for production
-  checkRevocationForUntrustedChains: false
-  # for testing purposes set to public tsp url from digicert
-  tspSourceUrl: "http://timestamp.digicert.com"
-  # optional: not needed for digicert
-  tspPolicyOid:
-  # bundle: Signing Certificate + with its private key + intermediate ca + root ca (chain muss vollständig sein)
-  pkcs12FileName: "signing.p12"
+pdfassemblyshowcase:
+  signing:
+    # has to be true for production
+    checkRevocationForUntrustedChains: false
+    # for testing purposes set to public tsp url from digicert
+    tspSourceUrl: "http://timestamp.digicert.com"
+    # optional: not needed for digicert
+    tspPolicyOid:
+    # bundle: Signing Certificate + with its private key + intermediate ca + root ca (chain muss vollständig sein)
+    pkcs12FileName: "signing.p12"
+
+gotenberg:
+  gotenbergUrl: "http://0.0.0.0:3000"
+  username: "gotenberg"
+  password: "secretpw"

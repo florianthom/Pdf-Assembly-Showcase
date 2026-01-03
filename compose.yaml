@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pdfassemblyshowcase:latest
+    container_name: pdfassemblyshowcase
+    environment:
+      GOTENBERG_GOTENBERGURL: "http://gotenberg:3000"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,exec,size=512m
+      - /dev/shm:rw,nosuid,size=1g
+    ports:
+      - "8081:8080"
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    container_name: gotenberg
+    volumes:
+      - ./src/main/resources/static/gotenberg:/home/gotenberg/static:ro
+    environment:
+      API_ENABLE_BASIC_AUTH: true
+      GOTENBERG_API_BASIC_AUTH_USERNAME: gotenberg
+      GOTENBERG_API_BASIC_AUTH_PASSWORD: secretpw
+    ports:
+      - "3000:3000"
