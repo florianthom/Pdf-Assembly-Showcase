@@ -3,6 +3,7 @@ package com.florianthom.pdfassemblyshowcase.services;
 import com.florianthom.pdfassemblyshowcase.domain.PokemonTrainer;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -13,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -85,6 +87,21 @@ public class PdfAssemblyService {
                 .bodyToMono(byte[].class)
                 .block();
         return pdf;
+    }
+
+    public byte[] renderPdfByOpenHtmlToPdf(PokemonTrainer trainer) {
+        System.out.println("Assemble pdf by openhtml to pdf");
+        var htmlString = createHtmlDocumentLayout(trainer);
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.withHtmlContent(htmlString, null);
+            builder.toStream(out);
+            builder.run();
+            return out.toByteArray();
+        } catch (Exception e) {
+            throw new IllegalStateException("PDF generation failed", e);
+        }
     }
 
     public byte[] assemblePdf(PokemonTrainer trainer) throws IOException {

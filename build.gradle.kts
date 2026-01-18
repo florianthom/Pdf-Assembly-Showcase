@@ -33,6 +33,12 @@ dependencies {
     implementation("eu.europa.ec.joinup.sd-dss:dss-utils-apache-commons:6.3")
     implementation("eu.europa.ec.joinup.sd-dss:dss-cms-object:6.3")
 
+
+    implementation("io.github.openhtmltopdf:openhtmltopdf-pdfbox:1.1.36")
+    constraints { implementation("org.apache.pdfbox:pdfbox:3.0.6") }
+
+
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

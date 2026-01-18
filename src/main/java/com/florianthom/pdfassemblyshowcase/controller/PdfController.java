@@ -46,8 +46,17 @@ public class PdfController {
         return ResponseEntity.ok("<h1>ping</h1>");
     }
 
+    @GetMapping("preview-htmlpdf")
+    @ResponseBody
+    public String previewInvoice() {
+        return  templateEngine.process(
+                "pokemontrainer",
+                new Context(Locale.getDefault(), Map.of("pokemontrainer", trainer))
+        );
+    }
+
     @GetMapping("/create-pdf")
-    public ResponseEntity<byte[]> createPdf() throws IOException {
+    public ResponseEntity<byte[]> createPdfWithPlaywrightChromium() throws IOException {
         var pdf = pdfAssemblyService.assemblePdf(trainer);
 
         HttpHeaders headers = new HttpHeaders();
@@ -82,12 +91,22 @@ public class PdfController {
                 .body(pdf);
     }
 
-    @GetMapping("preview-htmlpdf")
-    @ResponseBody
-    public String previewInvoice() {
-        return  templateEngine.process(
-                "pokemontrainer",
-                new Context(Locale.getDefault(), Map.of("pokemontrainer", trainer))
+    @GetMapping("/create-pdf-with-openhtmltopdf")
+    public ResponseEntity<byte[]> createPdfWithOpenHtmlToPdf() {
+        var pdf = pdfAssemblyService.renderPdfByOpenHtmlToPdf(trainer);
+
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(
+                ContentDisposition.builder("inline")
+                        .filename("pokemontrainer-" + trainer.trainerId + ".pdf")
+                        .build()
         );
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdf);
     }
+
+
 }
