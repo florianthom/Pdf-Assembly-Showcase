@@ -89,6 +89,7 @@ public class PdfAssemblyService {
         return pdf;
     }
 
+    // integration guide: https://github.com/openhtmltopdf/openhtmltopdf/wiki/Integration-Guide
     public byte[] renderPdfByOpenHtmlToPdf(PokemonTrainer trainer) {
         System.out.println("Assemble pdf by openhtml to pdf");
         var htmlString = createHtmlDocumentLayout(trainer);
